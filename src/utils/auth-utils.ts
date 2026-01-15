@@ -27,3 +27,15 @@ export const requireUnAuth = async () => {
 
     return session;
 };
+
+export const redirectToHomeIfSession = async () => {
+    const session = await auth.api.getSession({
+        headers: await headers()
+    })
+
+    if (session) {
+        redirect("/home");
+    }
+
+    return session;
+}
