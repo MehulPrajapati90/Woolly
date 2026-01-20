@@ -1,8 +1,6 @@
 "use client"
 
-import { IconCirclePlusFilled, IconMail, type Icon } from "@tabler/icons-react"
-
-import { Button } from "@/components/ui/button"
+import { type Icon } from "@tabler/icons-react"
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -11,6 +9,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import CreateEventModal from "../event/create-event-modal"
+import { useRouter } from "next/navigation"
 
 export function NavMain({
   items,
@@ -21,6 +20,8 @@ export function NavMain({
     icon?: Icon
   }[]
 }) {
+
+  const router = useRouter();
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
@@ -31,7 +32,7 @@ export function NavMain({
         </SidebarMenu>
         <SidebarMenu>
           {items.map((item) => (
-            <SidebarMenuItem key={item.title}>
+            <SidebarMenuItem onClick={() => router.push(`/home/${item?.url}`)} key={item.title}>
               <SidebarMenuButton tooltip={item.title}>
                 {item.icon && <item.icon />}
                 <span>{item.title}</span>
@@ -42,4 +43,4 @@ export function NavMain({
       </SidebarGroupContent>
     </SidebarGroup>
   )
-}
+};
