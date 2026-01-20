@@ -6,22 +6,23 @@ datasource db {
   provider = "postgresql"
 }
 
-model test {
-  id   String @id @default(uuid())
-  name String
+enum UserRole {
+  USER
+  ADMIN
 }
 
 model User {
   id            String    @id
   name          String
   email         String
+  role          UserRole  @default(USER)
   emailVerified Boolean   @default(false)
   image         String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
-  hosts         Host[]
+  host          Host?
 
   @@unique([email])
   @@map("user")
@@ -76,12 +77,13 @@ model Verification {
 }
 
 model Host {
-  id        String   @id @default(uuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  events    Events[]
+  id             String          @id @default(uuid())
+  userId         String          @unique
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  events         Event[]
+  eventCalendars EventCalendar[]
 }
 
 enum EventStatus {
@@ -97,17 +99,94 @@ enum CoverMediaType {
   VIDEO
 }
 
-model Events {
-  id            String          @id @default(uuid())
-  hostId        String
-  host          Host            @relation(fields: [hostId], references: [id], onDelete: Cascade)
-  name          String
+enum Visibility {
+  PUBLIC
+  PRIVATE
+  UNLISTED
+}
+
+model Event {
+  id             String          @id @default(uuid())
+  hostId         String
+  host           Host            @relation(fields: [hostId], references: [id], onDelete: Cascade)
+  name           String
+  description    String?
+  eventStartDate DateTime
+  eventEndDate   DateTime
+  location       String?
+  visibility     Visibility
+  coverMedia     CoverMediaType?
+  coverMediaUrl  String?
+  calendarId     String?
+  calendar       EventCalendar?  @relation(fields: [calendarId], references: [id], onDelete: Cascade)
+
+  status    EventStatus @default(PENDING)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  @@index([hostId, status])
+}
+
+model EventCalendar {
+  id             String  @id @default(uuid())
+  name           String
+  description    String?
+  coverImageUrl  String?
+  coverBannerUrl String?
+  locationUTC    String?
+  timezone       String?
+
+  hostId String
+  host   Host   @relation(fields: [hostId], references: [id], onDelete: Cascade)
+
+  events              Event[]
+  categories          EventCalendarCategory[]
+  calendarSocialLinks CalendarSocialLinks[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model EventsCategory {
+  id            String   @id @default(uuid())
+  name          String   @unique
   description   String?
-  eventDate     DateTime
-  location      String?
-  coverMedia    CoverMediaType?
-  coverMediaUrl String?
-  status        EventStatus     @default(PENDING)
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
+  coverImageUrl String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  calendars EventCalendarCategory[]
+}
+
+model EventCalendarCategory {
+  calendarId String
+  categoryId String
+
+  calendar EventCalendar @relation(fields: [calendarId], references: [id], onDelete: Cascade)
+
+  category EventsCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([calendarId, categoryId])
+}
+
+enum Platform {
+  FACEBOOK
+  TWITTER
+  INSTAGRAM
+  PEERLIST
+  LINKEDIN
+  WEBSITE
+}
+
+model CalendarSocialLinks {
+  id         String        @id @default(uuid())
+  calendarId String
+  calendar   EventCalendar @relation(fields: [calendarId], references: [id], onDelete: Cascade)
+  platform   Platform
+  url        String
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
 }
