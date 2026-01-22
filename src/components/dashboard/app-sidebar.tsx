@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import {
+  IconBrandSafari,
   IconCalendarMonth,
   IconCamera,
   IconChartBar,
@@ -49,9 +50,9 @@ const data = {
       icon: IconCalendarMonth,
     },
     {
-      title: "Analytics",
-      url: "#",
-      icon: IconChartBar,
+      title: "Discover",
+      url: "/discover",
+      icon: IconBrandSafari,
     },
     {
       title: "Projects",
