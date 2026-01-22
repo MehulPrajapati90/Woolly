@@ -1,4 +1,4 @@
-import { createEvent } from "@/actions/event";
+import { createEvent, getAllEvents, getEventsForUser } from "@/actions/event";
 import { CreateServerType } from "@/types";
 import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 
@@ -10,4 +10,11 @@ export const useCreateEvent = () => {
             queryClient.invalidateQueries({ queryKey: ['events'] });
         }
     })
+};
+
+export const useGetEventsForUser = () => {
+    return useQuery({
+        queryKey: ['events'],
+        queryFn: async () => getEventsForUser(),
+    });
 };
