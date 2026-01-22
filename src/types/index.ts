@@ -8,7 +8,8 @@ export interface CreateServerType {
     name: string,
     description: string,
     coverMediaUrl: string,
-    coverMediaType: CoverMediaType
+    coverMediaType: CoverMediaType,
+    calendarId: string
 }
 
 export interface UpdateEventType {
