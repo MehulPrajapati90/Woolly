@@ -18,13 +18,23 @@ import { SidebarMenuButton } from "../ui/sidebar"
 import { UploadDropzone } from "@uploadthing/react"
 import { OurFileRouter } from "@/lib/uploadThings"
 import Image from "next/image"
-import { Trash } from "lucide-react"
+import { Plus, Trash } from "lucide-react"
 import { useEffect, useState } from "react"
 import Hint from "../ui/hint"
 import { EventCalendar } from "../calendar"
 import { Textarea } from "../ui/textarea"
 import { useCreateEvent } from "@/hooks/query/event";
 import { toast } from "sonner";
+import { useCreateCalendar, useGetCalendarsByHostId } from "@/hooks/query/calendar";
+import { Spinner } from "../ui/spinner";
+
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 const CreateEventModal = () => {
   const [eventMedia, setEventMedia] = useState<string | null>(null);
@@ -39,8 +49,14 @@ const CreateEventModal = () => {
   const [description, setDescription] = useState<string>("");
 
   const [openDialog, setOpenDialog] = useState<boolean>(false);
+  const [createCalendar, setCreateCalendar] = useState<boolean>(false);
+
+  const [calendarId, setCalendarId] = useState<string>("");
+  const [calendarName, setCalendarName] = useState<string>("");
 
   const { mutateAsync, isPending } = useCreateEvent();
+  const { data: calendars, isPending: isCalendarsPending } = useGetCalendarsByHostId();
+  const { mutateAsync: createCalendarMutate, isPending: isCreateCalendarPending } = useCreateCalendar();
 
   const handleRemove = () => {
     setEventMedia(null);
@@ -89,6 +105,7 @@ const CreateEventModal = () => {
         visibility: "PUBLIC",
         coverMediaType: mediaType! as "IMAGE" | "VIDEO",
         coverMediaUrl: eventMedia!,
+        calendarId: calendarId!,
       });
 
       if (response.success) {
@@ -101,6 +118,7 @@ const CreateEventModal = () => {
         setEndTime("10:30:00");
         setEventMedia(null);
         setMediaType(null);
+        setCalendarId("");
 
         toast.success("Event created successfully!");
       } else {
@@ -109,7 +127,34 @@ const CreateEventModal = () => {
 
       setOpenDialog(false);
     }
-  }
+  };
+
+  const handleCreateCalendar = async () => {
+    // Calendar creation logic goes here
+    const newCalendar = { name: calendarName, coverImageUrl: `https://ui-avatars.com/api/?name=${encodeURIComponent(calendarName)}&background=random` };
+
+    const response = await createCalendarMutate({ ...newCalendar });
+
+    if (response.success) {
+      toast.success("Calendar created successfully!");
+      setCreateCalendar(false);
+      setCalendarName("");
+
+      setCalendarId(response?.calendar?.id || "");
+    } else {
+      toast.error(response.message || "Failed to create calendar.");
+    }
+  };
+
+  console.log(calendarId)
+
+  if (isCalendarsPending) {
+    return (
+      <div className="w-full h-40 flex items-center justify-center">
+        <Spinner />
+      </div>
+    );
+  };
 
   return (
     <Dialog open={openDialog} onOpenChange={() => setOpenDialog(!openDialog)} >
@@ -122,7 +167,7 @@ const CreateEventModal = () => {
           <span>Create Event</span>
         </SidebarMenuButton>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[870px]">
+      <DialogContent className="sm:max-w-[1000px]">
         <DialogHeader>
           <DialogTitle>Create Event</DialogTitle>
           <DialogDescription>
@@ -205,7 +250,33 @@ const CreateEventModal = () => {
                 </div>
                 <div className="w-full h-auto flex flex-col items-start gap-2 mb-4">
                   <Label htmlFor="description">Event Description</Label>
-                  <Textarea id="description" placeholder="Add Event Description" value={description} onChange={(e) => setDescription(e.target.value)} className="w-full h-30" />
+                  <Textarea id="description" placeholder="Add Event Description" value={description} onChange={(e) => setDescription(e.target.value)} className="w-full h-25" />
+                </div>
+                <div className="w-full h-auto flex flex-row items-center gap-4 mb-4">
+                  <div className="w-full h-auto flex flex-col items-start gap-2 mb-4">
+                    <Label htmlFor="name">Select Calendar</Label>
+                    <Select value={calendarId} onValueChange={(value) => setCalendarId(value)}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select Calendar" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {calendars?.calendars?.map((calendar) => (
+                          <SelectItem key={calendar?.id} value={calendar?.id}>
+                            {calendar?.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="w-full h-auto flex flex-col items-start gap-2 mb-4">
+                    <Label htmlFor="name">Select Calendar</Label>
+                    <Button className="w-full text-left" asChild variant="outline" onClick={() => setCreateCalendar(true)}>
+                      <div>
+                        <p>New Calendar</p>
+                        <Plus size={18} />
+                      </div>
+                    </Button>
+                  </div>
                 </div>
               </div>
 
@@ -232,6 +303,30 @@ const CreateEventModal = () => {
           </Button>
         </DialogFooter>
       </DialogContent>
+
+
+      {createCalendar && (
+        <Dialog open={createCalendar} onOpenChange={() => setCreateCalendar(!createCalendar)} >
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle>Create Calendar</DialogTitle>
+              <DialogDescription>
+                Create New Calendar from here. Click save when you&apos;re
+                done.
+              </DialogDescription>
+            </DialogHeader>
+            {/* Calendar creation form goes here */}
+            <div className="w-full h-auto flex flex-col items-start gap-2 my-4">
+              <Label htmlFor="name">Calendar Name</Label>
+              <Input id="name" placeholder="Add Calendar Name" value={calendarName} onChange={(e) => setCalendarName(e.target.value)} className="w-full" />
+            </div>
+
+            <DialogFooter>
+              <Button type="button" onClick={handleCreateCalendar} disabled={isCreateCalendarPending || !calendarName}>Save changes</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </Dialog >
   )
 }

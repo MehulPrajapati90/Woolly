@@ -4,7 +4,7 @@ import client from "@/lib/db";
 import { CreateServerType, UpdateEventType } from "@/types";
 import { dbUser } from "./auth";
 
-export const createEvent = async ({ description, endDate, name, startDate, visibility, location, coverMediaType, coverMediaUrl }: CreateServerType) => {
+export const createEvent = async ({ description, endDate, name, startDate, visibility, location, coverMediaType, coverMediaUrl, calendarId }: CreateServerType) => {
     const user = await dbUser();
 
     if (!user) {
@@ -37,6 +37,7 @@ export const createEvent = async ({ description, endDate, name, startDate, visib
                 hostId: newHost?.id || isHostId!,
                 visibility: visibility,
                 location: location,
+                calendarId: calendarId
             }
         });
 
