@@ -36,7 +36,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-const CreateEventModal = () => {
+const CreateEventModal = ({ children }: { children: React.ReactNode }) => {
   const [eventMedia, setEventMedia] = useState<string | null>(null);
   const [mediaType, setMediaType] = useState<string | null>(null);
 
@@ -146,8 +146,6 @@ const CreateEventModal = () => {
     }
   };
 
-  console.log(calendarId)
-
   if (isCalendarsPending) {
     return (
       <div className="w-full h-40 flex items-center justify-center">
@@ -159,13 +157,7 @@ const CreateEventModal = () => {
   return (
     <Dialog open={openDialog} onOpenChange={() => setOpenDialog(!openDialog)} >
       <DialogTrigger asChild className="w-full">
-        <SidebarMenuButton
-          tooltip="Quick Create"
-          className="bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground min-w-8 duration-200 ease-linear mx-1 w-full px-15"
-        >
-          <IconCirclePlusFilled className="mt-0.5" />
-          <span>Create Event</span>
-        </SidebarMenuButton>
+        {children}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[1000px]">
         <DialogHeader>

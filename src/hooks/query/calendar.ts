@@ -18,6 +18,7 @@ export const useCreateCalendar = () => {
         mutationFn: async ({ ...data }: CreateCalendarType) => createCalendar({ ...data }),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["calendar"] });
+            queryClient.invalidateQueries({ queryKey: ["discover"] });
         }
     });
 };

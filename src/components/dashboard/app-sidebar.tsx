@@ -5,6 +5,7 @@ import {
   IconBrandSafari,
   IconCalendarMonth,
   IconCamera,
+  IconCategory,
   IconChartBar,
   IconDashboard,
   IconDatabase,
@@ -55,9 +56,9 @@ const data = {
       icon: IconBrandSafari,
     },
     {
-      title: "Projects",
-      url: "#",
-      icon: IconFolder,
+      title: "Category",
+      url: "/category",
+      icon: IconCategory,
     },
     {
       title: "Team",
