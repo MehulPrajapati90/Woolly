@@ -32,3 +32,9 @@ export interface CreateCalendarType {
     locationUTC?: string,
     timezone?: string
 }
+
+export interface CreateCalendarCategory {
+    name: string,
+    description?: string,
+    imageUrl?: string
+}

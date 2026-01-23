@@ -1,5 +1,6 @@
 "use client";
 
+import CreateEventModal from '@/components/event/create-event-modal';
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 import { useGetEventsForUser } from '@/hooks/query/event'
@@ -34,10 +35,12 @@ const EventsPage = () => {
             <div className='p-2 py-5 font-sans flex flex-col gap-6'>
                 <div className='flex items-center justify-between'>
                     <p className='text-lg font-medium'>Your Events</p>
-                    <Button className='flex items-center'>
-                        <p>Create Events</p>
-                        <Plus size={16} />
-                    </Button>
+                    <CreateEventModal>
+                        <Button className='flex items-center w-40'>
+                            <p>Create Events</p>
+                            <Plus size={16} />
+                        </Button>
+                    </CreateEventModal>
                 </div>
 
                 <div className=''>

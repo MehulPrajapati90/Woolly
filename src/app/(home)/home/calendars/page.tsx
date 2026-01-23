@@ -1,5 +1,6 @@
 "use client";
 
+import { CreateCalendarModal } from '@/components/event/create-calendar.modal';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { useGetCalendarsByHostId } from '@/hooks/query/calendar';
@@ -32,10 +33,13 @@ const CalendarsPage = () => {
       <div className='p-2 py-5 font-sans flex flex-col gap-6'>
         <div className='flex items-center justify-between'>
           <p className='text-lg font-medium'>Your Calendars</p>
-          <Button className='flex items-center'>
-            <p>Create Calender</p>
-            <Plus size={16} />
-          </Button>
+          <CreateCalendarModal>
+            <Button className='flex items-center'>
+              <p>Create Calender</p>
+              <Plus size={16} />
+            </Button>
+          </CreateCalendarModal>
+
         </div>
 
         <div className=''>
@@ -56,6 +60,7 @@ const CalendarsPage = () => {
           )}
         </div>
       </div>
+
     </div>
   )
 };
