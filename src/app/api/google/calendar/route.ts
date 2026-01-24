@@ -4,7 +4,8 @@ import { headers } from "next/headers";
 import client from "@/lib/db";
 import { google } from "googleapis";
 
-export async function GET(request: NextRequest) {
+export async function POST(request: NextRequest) {
+    const { eventName, eventDescription, eventStartDate, eventEndDate } = await request.json();
     try {
         // Get the current session
         const session = await auth.api.getSession({
@@ -83,14 +84,14 @@ export async function GET(request: NextRequest) {
 
         // Create a calendar event with Google Meet
         const event = {
-            summary: "Woolly Meeting",
-            description: "Meeting created via Woolly",
+            summary: eventName,
+            description: eventDescription,
             start: {
-                dateTime: new Date().toISOString(),
+                dateTime: new Date(eventStartDate).toISOString(),
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
             },
             end: {
-                dateTime: new Date(Date.now() + 60 * 60 * 1000).toISOString(), // 1 hour from now
+                dateTime: new Date(eventEndDate).toISOString(),
                 timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
             },
             conferenceData: {

@@ -1,9 +1,9 @@
-import { CoverMediaType, Visibility } from "@prisma/client";
+import { CoverMediaType, LocationType, Visibility } from "@prisma/client";
 
 export interface CreateServerType {
     startDate: Date,
     endDate: Date,
-    location?: string,
+    locationUrl?: string,
     visibility: Visibility,
     name: string,
     description: string,
@@ -16,7 +16,7 @@ export interface UpdateEventType {
     eventId: string,
     startDate: Date,
     endDate: Date,
-    location?: string,
+    locationUrl?: string,
     visibility: Visibility,
     name: string,
     description: string,
@@ -37,4 +37,24 @@ export interface CreateCalendarCategory {
     name: string,
     description?: string,
     imageUrl?: string
+}
+
+export interface EventRegisterType {
+    eventId: string,
+    eventVisibility: Visibility,
+}
+
+export interface CancelEventType {
+    eventId: string,
+    eventVisibility: Visibility,
+}
+
+export interface GetEventDetailsByIdType {
+    eventId: string
+}
+
+export interface UpdateEventLocationType {
+    eventId: string,
+    locationUrl: string,
+    locationType: LocationType
 }

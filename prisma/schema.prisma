@@ -24,6 +24,7 @@ model User {
   accounts         Account[]
   host             Host?
   eventsCategories EventsCategory[]
+  registerEvents   RegisterEvents[]
 
   @@unique([email])
   @@map("user")
@@ -106,6 +107,12 @@ enum Visibility {
   UNLISTED
 }
 
+enum LocationType {
+ GOOGLE
+ ZOOM
+ TEAMS
+}
+
 model Event {
   id             String          @id @default(uuid())
   hostId         String
@@ -114,12 +121,15 @@ model Event {
   description    String?
   eventStartDate DateTime
   eventEndDate   DateTime
-  location       String?
+  locationUrl    String?
+  locationType   LocationType?
   visibility     Visibility
   coverMedia     CoverMediaType?
   coverMediaUrl  String?
   calendarId     String?
   calendar       EventCalendar?  @relation(fields: [calendarId], references: [id], onDelete: Cascade)
+
+  registerEvents RegisterEvents[]
 
   status    EventStatus @default(PENDING)
   createdAt DateTime    @default(now())
@@ -194,4 +204,28 @@ model CalendarSocialLinks {
   url        String
   createdAt  DateTime      @default(now())
   updatedAt  DateTime      @updatedAt
+}
+
+enum RegistrationStatus {
+  REGISTERED
+  CANCELLED
+  CHECKED_IN
+  WAITLISTED
+}
+
+model RegisterEvents {
+  id      String @id @default(uuid())
+  userId  String
+  eventId String
+  events  Event  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  status RegistrationStatus @default(REGISTERED)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, eventId])
+  @@index([eventId])
+  @@index([userId])
 }
