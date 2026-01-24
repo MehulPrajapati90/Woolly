@@ -15,11 +15,11 @@ const DiscoverPage = () => {
     const router = useRouter();
 
     const handleCalendarRedirect = (calendarId: string) => {
-        router.push(`/home/calendars/${calendarId}`);
+        router.push(`/home/discover/calendars/${calendarId}`);
     }
 
     const handleCategoryRedirect = (categoryId: string) => {
-        router.push(`/home/category/${categoryId}`);
+        router.push(`/home/discover/category/${categoryId}`);
     }
 
     if (isPending) {

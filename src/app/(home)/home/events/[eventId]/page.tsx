@@ -1,4 +1,4 @@
-import React from 'react'
+import EventHostPage from '@/components/event/event-host-page';
 
 interface HostEventProps {
     params: Promise<{
@@ -10,7 +10,9 @@ interface HostEventProps {
 const HostEvents = async ({ params }: HostEventProps) => {
     const { eventId } = await params;
     return (
-        <div className='p-4'>{eventId}</div>
+        <div className='p-4'>
+            <EventHostPage eventId={eventId} />
+        </div>
     )
 }
 
