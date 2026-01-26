@@ -267,7 +267,11 @@ export const getEventDetailsById = async ({ eventId }: GetEventDetailsByIdType) 
                     }
                 },
                 calendar: true,
-                registerEvents: true,
+                registerEvents: {
+                    include: {
+                        user: true
+                    }
+                },
             }
         });
 
