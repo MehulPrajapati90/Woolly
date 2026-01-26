@@ -19,11 +19,11 @@ export const getDiscoverData = async () => {
 
     try {
         const calendars = await client.eventCalendar.findMany({
-            take: 12,
+            take: 10,
         });
 
         const calendarCategories = await client.eventsCategory.findMany({
-            take: 12,
+            take: 10,
         });
 
         const discovery = {
