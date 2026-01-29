@@ -8,6 +8,16 @@ import { Plus } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
+interface CalendarType {
+  id: string;
+  name: string;
+  description: string | null;
+  coverImageUrl: string | null;
+  coverBannerUrl: string | null;
+  locationUTC: string | null;
+  timezone: string | null;
+}
+
 const CalendarsPage = () => {
   const { data: calendars, isPending } = useGetCalendarsByHostId();
   const router = useRouter();
@@ -49,7 +59,7 @@ const CalendarsPage = () => {
             </div>
           ) : (
             <div className='grid grid-cols-5 gap-4 mt-6 '>
-              {calendars?.calendars?.map((calendar) => (
+              {calendars?.calendars?.map((calendar: CalendarType) => (
                 <div key={calendar?.id} onClick={() => handleRedirect(calendar?.id)} className='border p-4 rounded-md hover:shadow-md cursor-pointer bg-neutral-950 hover:bg-neutral-900 duration-200 transition-all ease-in-out'>
                   <Image unoptimized src={calendar?.coverImageUrl! || ""} alt='Calendar Image' width={100} height={100} className='w-full h-25 object-cover rounded-md mb-4' />
                   <p className='font-medium text-lg'>{calendar.name}</p>

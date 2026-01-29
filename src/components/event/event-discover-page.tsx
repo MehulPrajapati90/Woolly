@@ -38,8 +38,6 @@ const EventDiscoverPage = ({ eventId, currentUser }: EventDiscoverProps) => {
     const router = useRouter();
     const { mutateAsync: cancelRegistration, isPending: isCanceling } = useCancelRegisterEvents();
 
-    console.log(EventDetails);
-
     if (isPending) {
         return (
             <div className="min-h-screen bg-black flex items-center justify-center">
