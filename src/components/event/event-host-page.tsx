@@ -36,7 +36,7 @@ const EventHostPage = ({ eventId }: EventHostProps) => {
     const router = useRouter();
     const [copied, setCopied] = useState(false);
 
-    const isRegisteredInEvent = EventDetails?.event?.registerEvents.find((v) => v.userId === EventDetails.event?.host.user.id);
+    const isRegisteredInEvent = EventDetails?.event?.registerEvents.find((v: any) => v.userId === EventDetails.event?.host.user.id);
 
     if (isPending) {
         return (

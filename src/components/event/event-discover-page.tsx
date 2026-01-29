@@ -60,7 +60,7 @@ const EventDiscoverPage = ({ eventId, currentUser }: EventDiscoverProps) => {
     const isLive = new Date() >= startDate && new Date() <= endDate;
     const isHost = event.host?.user?.id === currentUser.id;
 
-    const isRegistered = event.registerEvents.find((reg) => reg.userId === currentUser.id);
+    const isRegistered = event.registerEvents.find((reg: any) => reg?.userId === currentUser?.id);
 
     const formatTime = (date: Date) => {
         return format(date, 'h:mm a');
