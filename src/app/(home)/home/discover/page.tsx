@@ -9,6 +9,29 @@ import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { CreateCalendarCategoryDialog } from "@/components/event/create-calendar-category";
 
+interface DiscoverCategory {
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+    userId: string;
+    name: string;
+    description: string | null;
+    coverImageUrl: string | null;
+}
+
+interface DicoverCalendar {
+    name: string;
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+    description: string | null;
+    coverImageUrl: string | null;
+    hostId: string;
+    coverBannerUrl: string | null;
+    locationUTC: string | null;
+    timezone: string | null;
+}
+
 const DiscoverPage = () => {
     const { data: discover, isPending } = useDiscoverData();
 
@@ -58,7 +81,7 @@ const DiscoverPage = () => {
                         </div>
                     ) : (
                         <div className='grid grid-cols-5 gap-4 py-4'>
-                            {discover?.discovery.calendarCategories?.map((category) => (
+                            {discover?.discovery.calendarCategories?.map((category: DiscoverCategory) => (
                                 <div key={category?.id} onClick={() => handleCategoryRedirect(category?.id)} className='border p-4 rounded-md hover:shadow-md cursor-pointer bg-neutral-950 hover:bg-neutral-900 duration-200 transition-all ease-in-out'>
                                     <Image unoptimized src={category?.coverImageUrl! || ""} alt='Calendar Image' width={100} height={100} className='w-full h-25 object-cover rounded-md mb-4' />
                                     <p className='font-medium text-lg'>{category.name}</p>
@@ -97,7 +120,7 @@ const DiscoverPage = () => {
                         </div>
                     ) : (
                         <div className='grid grid-cols-5 gap-4 py-4'>
-                            {discover?.discovery.calendars?.map((calendar) => (
+                            {discover?.discovery.calendars?.map((calendar: DicoverCalendar) => (
                                 <div key={calendar?.id} onClick={() => handleCalendarRedirect(calendar?.id)} className='border p-4 rounded-md hover:shadow-md cursor-pointer bg-neutral-950 hover:bg-neutral-900 duration-200 transition-all ease-in-out'>
                                     <Image unoptimized src={calendar?.coverImageUrl! || ""} alt='Calendar Image' width={100} height={100} className='w-full h-25 object-cover rounded-md mb-4' />
                                     <p className='font-medium text-lg'>{calendar.name}</p>
