@@ -34,6 +34,16 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+interface CalendarType {
+  name: string;
+  id: string;
+  description: string | null;
+  coverImageUrl: string | null;
+  coverBannerUrl: string | null;
+  locationUTC: string | null;
+  timezone: string | null;
+}
+
 const UpdateEventModal = ({ children }: { children: React.ReactNode }) => {
   const [eventMedia, setEventMedia] = useState<string | null>(null);
   const [mediaType, setMediaType] = useState<string | null>(null);
@@ -250,7 +260,7 @@ const UpdateEventModal = ({ children }: { children: React.ReactNode }) => {
                         <SelectValue placeholder="Select Calendar" />
                       </SelectTrigger>
                       <SelectContent>
-                        {calendars?.calendars?.map((calendar) => (
+                        {calendars?.calendars?.map((calendar: CalendarType) => (
                           <SelectItem key={calendar?.id} value={calendar?.id}>
                             {calendar?.name}
                           </SelectItem>
