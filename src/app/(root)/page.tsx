@@ -1,241 +1,205 @@
 "use client";
 
-import { useState } from "react";
+import { Shell } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useSession, signIn, signOut } from "@/lib/auth-client";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Video,
-  Plus,
-  ArrowRight,
-  LogOut,
-  Sparkles,
-  Users,
-  Shield,
-  Zap,
-} from "lucide-react";
 
-export default function Home() {
+const navItems = ["About", "Features", "Pricing", "Integrations", "FAQ"];
+
+const comparisonPoints = [
+  "Real-time attendee communication",
+  "Google Meet + Zoom in one flow",
+  "Google Calendar sync and reminders",
+  "Automated scheduling workflows",
+  "Built for creators and event teams",
+];
+
+export default function Page() {
   const router = useRouter();
-  const { data: session, isPending } = useSession();
-  const [roomCode, setRoomCode] = useState("");
-  const [isCreating, setIsCreating] = useState(false);
-
-  const generateRoomId = () => {
-    const roomId = crypto.randomUUID();
-    return roomId;
-  };
-
-  const handleCreateRoom = () => {
-    setIsCreating(true);
-    const roomId = generateRoomId();
-    router.push(`/call/${roomId}`);
-  };
-
-  const handleJoinRoom = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (roomCode.trim()) {
-      // Extract room ID from URL or use as-is
-      let roomId = roomCode.trim();
-      if (roomId.includes("/call/")) {
-        roomId = roomId.split("/call/").pop() || roomId;
-      }
-      router.push(`/call/${roomId}`);
-    }
-  };
-
-  const handleSignIn = () => {
-    signIn.social({ provider: "google" });
-  };
-
-  if (isPending) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-zinc-950">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-violet-500 border-t-transparent" />
-      </div>
-    );
+  const handleRedirectToHome = () => {
+    router.push("/home");
   }
-
   return (
-    <div className="relative min-h-screen overflow-hidden bg-zinc-950">
-      {/* Animated Background */}
-      <div className="pointer-events-none fixed inset-0">
-        <div className="absolute left-1/4 top-0 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-violet-500/10 blur-[150px]" />
-        <div className="absolute bottom-0 right-1/4 h-[600px] w-[600px] translate-x-1/2 rounded-full bg-fuchsia-500/10 blur-[150px]" />
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSA2MCAwIEwgMCAwIDAgNjAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-50" />
-      </div>
+    <main className="relative min-h-screen overflow-hidden bg-black text-white">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-gradient-to-r from-red-700/35 via-orange-500/20 to-black blur-3xl" />
+      <div className="pointer-events-none absolute left-1/2 top-[28rem] h-60 w-[38rem] -translate-x-1/2 rounded-full bg-gradient-to-r from-red-700/45 via-orange-400/55 to-red-900/45 blur-[100px]" />
 
-      {/* Header */}
-      <header className="relative z-10 border-b border-zinc-800/50 bg-zinc-950/50 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500">
-              <Video className="h-5 w-5 text-white" />
+      <div className="relative mx-auto w-full max-w-6xl px-4 pb-20 pt-6 sm:px-6 lg:px-8">
+        <header className="mx-auto flex w-full max-w-4xl items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur-xl">
+          <div className="flex items-center gap-2">
+            <div className="grid h-8 w-8 place-items-center rounded-full bg-gradient-to-br from-orange-500 to-red-600 text-sm font-bold">
+              <Shell className="p-[0.2px]" />
             </div>
-            <span className="text-xl font-bold text-white">Wooly</span>
-          </div>
-
-          {session ? (
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-3">
-                {session.user.image && (
-                  <img
-                    src={session.user.image}
-                    alt={session.user.name || "User"}
-                    className="h-9 w-9 rounded-full border-2 border-zinc-700"
-                  />
-                )}
-                <span className="hidden text-sm font-medium text-zinc-300 sm:block">
-                  {session.user.name}
-                </span>
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => signOut()}
-                className="text-zinc-400 hover:text-white"
-              >
-                <LogOut className="mr-2 h-4 w-4" />
-                Sign out
-              </Button>
-            </div>
-          ) : (
-            <Button
-              onClick={handleSignIn}
-              className="bg-white text-zinc-900 hover:bg-zinc-200"
-            >
-              Sign in with Google
-            </Button>
-          )}
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="relative z-10 mx-auto max-w-6xl px-6 py-20">
-        {/* Hero Section */}
-        <div className="mb-20 text-center">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-violet-500/20 bg-violet-500/10 px-4 py-2 text-sm text-violet-300">
-            <Sparkles className="h-4 w-4" />
-            Crystal-clear video calls
-          </div>
-          <h1 className="mb-6 bg-gradient-to-b from-white to-zinc-400 bg-clip-text text-5xl font-bold tracking-tight text-transparent sm:text-6xl lg:text-7xl">
-            Video calls that
-            <br />
-            <span className="bg-gradient-to-r from-violet-400 to-fuchsia-400 bg-clip-text">
-              just work
+            <span className="text-lg font-semibold font-sans tracking-wide text-white/90">
+              Wooly
             </span>
-          </h1>
-          <p className="mx-auto mb-12 max-w-2xl text-lg text-zinc-400">
-            Connect face-to-face with anyone, anywhere. No downloads required.
-            Just create a room and share the link.
+          </div>
+
+          <nav className="hidden items-center gap-6 md:flex">
+            {navItems.map((item) => (
+              <a
+                key={item}
+                href="#"
+                className="text-sm text-white/70 transition hover:text-white"
+              >
+                {item}
+              </a>
+            ))}
+          </nav>
+
+          <button onClick={handleRedirectToHome} className="rounded-full bg-gradient-to-r from-orange-500 to-red-600 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-red-950/40 transition hover:brightness-110">
+            Start Hosting
+          </button>
+        </header>
+
+        <section className="mx-auto mt-16 max-w-4xl text-center sm:mt-20">
+          <p className="mx-auto inline-flex items-center rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs text-white/70">
+            Online events, reimagined for creators and communities
           </p>
 
-          {/* Action Cards */}
-          <div className="mx-auto grid max-w-3xl gap-6 sm:grid-cols-2">
-            {/* Create New Room */}
-            <Card className="group border-zinc-800 bg-zinc-900/50 backdrop-blur-sm transition-all hover:border-violet-500/50 hover:bg-zinc-900/80">
-              <CardHeader>
-                <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 transition-transform group-hover:scale-110">
-                  <Plus className="h-6 w-6 text-white" />
+          <h1 className="mt-6 text-4xl font-semibold leading-tight sm:text-5xl lg:text-6xl">
+            Host premium online events
+            <span className="block bg-gradient-to-r from-orange-300 via-orange-400 to-red-500 bg-clip-text text-transparent">
+              with the tools you already use
+            </span>
+          </h1>
+
+          <p className="mx-auto mt-6 max-w-2xl text-sm leading-relaxed text-white/65 sm:text-base">
+            This app is built for people who want to host online events like
+            Luma. Wooly combines Google Meet, Zoom, and Google Calendar APIs so
+            your scheduling, invites, and live sessions work in one smooth flow.
+          </p>
+
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <button onClick={handleRedirectToHome} className="rounded-full bg-gradient-to-r from-orange-500 to-red-600 px-6 py-3 text-sm font-semibold text-white shadow-xl shadow-red-950/40 transition hover:brightness-110">
+              Book a Demo
+            </button>
+            <button className="rounded-full border border-white/20 bg-white/5 px-6 py-3 text-sm font-semibold text-white/90 transition hover:bg-white/10">
+              See Product Tour
+            </button>
+          </div>
+        </section>
+
+        <section className="mx-auto mt-24 max-w-5xl">
+          <p className="text-center text-xs uppercase tracking-[0.2em] text-white/45">
+            Trusted Integrations
+          </p>
+          <div className="mt-6 grid gap-4 sm:grid-cols-3">
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-5 text-center text-sm text-white/70 backdrop-blur-md">
+              Google Meet
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-5 text-center text-sm text-white/70 backdrop-blur-md">
+              Zoom
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-5 text-center text-sm text-white/70 backdrop-blur-md">
+              Google Calendar
+            </div>
+          </div>
+        </section>
+
+        <section className="mx-auto mt-24 max-w-5xl">
+          <h2 className="text-center text-3xl font-semibold leading-tight sm:text-4xl">
+            Why event teams choose Wooly
+          </h2>
+
+          <div className="mt-10 grid gap-5 md:grid-cols-2">
+            <article className="rounded-3xl border border-white/10 bg-white/[0.03] p-6">
+              <h3 className="text-lg font-medium text-white/80">Other tools</h3>
+              <ul className="mt-5 space-y-3 text-sm text-white/50">
+                <li>Too many disconnected apps</li>
+                <li>Manual invite and calendar updates</li>
+                <li>No consistent host workflow</li>
+                <li>Hard to scale recurring events</li>
+              </ul>
+            </article>
+
+            <article className="rounded-3xl border border-orange-400/30 bg-gradient-to-br from-orange-400/20 via-red-500/10 to-black p-6">
+              <h3 className="text-lg font-medium text-white">Wooly platform</h3>
+              <ul className="mt-5 space-y-3 text-sm text-white/85">
+                {comparisonPoints.map((point) => (
+                  <li key={point} className="flex items-start gap-2">
+                    <span className="mt-1 h-2 w-2 rounded-full bg-orange-400" />
+                    <span>{point}</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
+          </div>
+        </section>
+
+        <section className="mx-auto mt-16 max-w-4xl space-y-3">
+          {[
+            "How does Wooly connect with Google Calendar?",
+            "Can I host with Zoom and Google Meet both?",
+            "Is this suitable for recurring community events?",
+          ].map((question) => (
+            <details
+              key={question}
+              className="group rounded-2xl border border-white/10 bg-white/[0.03] p-5"
+            >
+              <summary className="cursor-pointer list-none text-sm font-medium text-white/90">
+                {question}
+              </summary>
+              <p className="mt-3 text-sm leading-relaxed text-white/60">
+                Yes. The platform is designed for recurring and one-time online
+                events, with built-in calendar sync and meeting link management.
+              </p>
+            </details>
+          ))}
+        </section>
+
+        <footer className="mx-auto mt-20 max-w-6xl rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.04] via-white/[0.02] to-red-950/20 px-6 py-10 sm:px-8">
+          <div className="grid gap-8 md:grid-cols-4">
+            <div className="md:col-span-2">
+              <div className="flex items-center gap-2">
+                <div className="grid h-8 w-8 place-items-center rounded-full bg-gradient-to-br from-orange-500 to-red-600 text-sm font-bold">
+                  <Shell className="p-[0.2px]" />
                 </div>
-                <CardTitle className="text-white">Create a new room</CardTitle>
-                <CardDescription className="text-zinc-400">
-                  Start a video call instantly and invite others
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button
-                  onClick={handleCreateRoom}
-                  disabled={isCreating}
-                  className="w-full bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white hover:from-violet-600 hover:to-fuchsia-600"
-                >
-                  {isCreating ? (
-                    <span className="flex items-center gap-2">
-                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                      Creating...
-                    </span>
-                  ) : (
-                    <>
-                      Create room
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </>
-                  )}
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Join Room */}
-            <Card className="group border-zinc-800 bg-zinc-900/50 backdrop-blur-sm transition-all hover:border-violet-500/50 hover:bg-zinc-900/80">
-              <CardHeader>
-                <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-xl bg-zinc-800 transition-transform group-hover:scale-110">
-                  <Users className="h-6 w-6 text-violet-400" />
-                </div>
-                <CardTitle className="text-white">Join a room</CardTitle>
-                <CardDescription className="text-zinc-400">
-                  Enter a room code or paste an invite link
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleJoinRoom} className="flex gap-2">
-                  <Input
-                    type="text"
-                    placeholder="Room code or link"
-                    value={roomCode}
-                    onChange={(e) => setRoomCode(e.target.value)}
-                    className="h-10 flex-1 border-zinc-700 bg-zinc-800 text-white placeholder:text-zinc-500"
-                  />
-                  <Button
-                    type="submit"
-                    disabled={!roomCode.trim()}
-                    variant="secondary"
-                    className="bg-zinc-800 text-white hover:bg-zinc-700"
-                  >
-                    Join
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-
-        {/* Features */}
-        <div className="grid gap-8 sm:grid-cols-3">
-          <div className="text-center">
-            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-500/10">
-              <Zap className="h-7 w-7 text-violet-400" />
+                <span className="text-lg font-semibold font-sans tracking-wide text-white/90">
+                  Wooly
+                </span>
+              </div>
+              <p className="mt-4 max-w-md text-sm leading-relaxed text-white/60">
+                Built for teams and creators who want to run online events like
+                Luma, powered by Google Meet, Zoom, and Google Calendar APIs.
+              </p>
             </div>
-            <h3 className="mb-2 font-semibold text-white">Instant connection</h3>
-            <p className="text-sm text-zinc-400">
-              No sign-up required. Just create a room and start calling.
-            </p>
-          </div>
-          <div className="text-center">
-            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-fuchsia-500/10">
-              <Shield className="h-7 w-7 text-fuchsia-400" />
-            </div>
-            <h3 className="mb-2 font-semibold text-white">End-to-end secure</h3>
-            <p className="text-sm text-zinc-400">
-              Your calls are encrypted and private by default.
-            </p>
-          </div>
-          <div className="text-center">
-            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-500/10">
-              <Video className="h-7 w-7 text-violet-400" />
-            </div>
-            <h3 className="mb-2 font-semibold text-white">HD video & audio</h3>
-            <p className="text-sm text-zinc-400">
-              Crystal-clear quality powered by LiveKit.
-            </p>
-          </div>
-        </div>
-      </main>
 
-      {/* Footer */}
-      <footer className="relative z-10 border-t border-zinc-800/50 py-8 text-center text-sm text-zinc-500">
-        <p>Built with LiveKit & Next.js</p>
-      </footer>
-    </div>
+            <div>
+              <h4 className="text-sm font-semibold text-white/90">Quick Links</h4>
+              <ul className="mt-4 space-y-2 text-sm text-white/60">
+                <li>
+                  <a href="#" className="transition hover:text-white">
+                    Features
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="transition hover:text-white">
+                    Pricing
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="transition hover:text-white">
+                    FAQ
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="text-sm font-semibold text-white/90">Integrations</h4>
+              <ul className="mt-4 space-y-2 text-sm text-white/60">
+                <li>Google Meet</li>
+                <li>Zoom</li>
+                <li>Google Calendar</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="mt-8 border-t border-white/10 pt-5 text-xs text-white/45">
+            © {new Date().getFullYear()} Wooly Events. All rights reserved.
+          </div>
+        </footer>
+      </div>
+    </main>
   );
 }
